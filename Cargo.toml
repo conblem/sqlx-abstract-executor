@@ -1,0 +1,13 @@
+[package]
+name = "sqlx-abstract-executor"
+version = "0.1.0"
+edition = "2018"
+license = "MIT"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+futures-util = "0.3"
+tokio = { version = "1", features = ["macros"] }
+sqlx = { version = "0.5", features = ["runtime-tokio-rustls", "postgres"]}
+either = "1.5"
