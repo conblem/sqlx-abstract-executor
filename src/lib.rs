@@ -250,8 +250,7 @@ mod tests {
         where
             R: Debug + 'a,
             M: Debug + 'a,
-            for<'b> &'b R: Executor<'b, Database = DB>,
-            for<'b> &'b mut M: Executor<'b, Database = DB>,
+            for<'b> Wrapper<'b, R, M>: Executor<'b, Database = DB>,
             I: Into<Wrapper<'a, R, M>>,
             // next 5 lines are only needed because we also abstract the database
             // probably doesn't make a lot of sense as SQL Syntax varies
