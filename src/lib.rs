@@ -8,7 +8,7 @@ use std::fmt::Debug;
 use std::marker::PhantomData;
 
 // this type is used in the from implementations as a placeholder for something that never exists
-// it implements Executor for bot &Self and &mut Self
+// it implements Executor for both &Self and &mut Self
 #[derive(Debug)]
 struct Never<DB> {
     inner: Infallible,
