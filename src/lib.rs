@@ -192,8 +192,6 @@ impl<'c, DB, R, M> Executor<'c> for Wrapper<'c, R, M>
 
 // from implementation for & using Never as placeholder
 impl<'a, DB, R> From<&'a R> for Wrapper<'a, R, Never<DB>>
-    where
-        &'a R: Executor<'a, Database = DB>,
 {
     fn from(inner: &'a R) -> Self {
         Wrapper::Ref { inner }
@@ -202,8 +200,6 @@ impl<'a, DB, R> From<&'a R> for Wrapper<'a, R, Never<DB>>
 
 // from implementation for &mut using Never as placeholder
 impl<'a, DB, M> From<&'a mut M> for Wrapper<'a, Never<DB>, M>
-    where
-        &'a mut M: Executor<'a, Database = DB>,
 {
     fn from(inner: &'a mut M) -> Self {
         Wrapper::Mut { inner }
