@@ -15,6 +15,7 @@ struct Never<DB> {
     phantom: PhantomData<DB>,
 }
 
+// todo: implement this using a macro
 impl<'c, DB> Executor<'c> for &'_ Never<DB>
     where
         DB: Database + Sync,
@@ -206,10 +207,9 @@ impl<'a, DB, M> From<&'a mut M> for Wrapper<'a, Never<DB>, M>
     }
 }
 
-// makes it possible to reuse the wrapper multiple times
-impl <'a, 'b, R, M> From<&'b mut Wrapper<'a, R, M>> for Wrapper<'b, R, M> {
-    fn from(input: &'b mut Wrapper<'a, R, M>) -> Self {
-        match input {
+impl <'a, 'b, R, M> Wrapper<'a, R, M> {
+    fn coerce(&'b mut self) -> Wrapper<'b, R, M> {
+        match self {
             Wrapper::Ref { inner } => Wrapper::Ref { inner },
             Wrapper::Mut { inner } => Wrapper::Mut { inner }
         }
@@ -224,6 +224,9 @@ mod tests {
 
     use super::*;
 
+    // this test should panic because we only care if it compiles
+    // the code here is more of an example
+    #[should_panic]
     #[tokio::test]
     async fn test() {
         let pool = PgPool::connect("your connection string").await.unwrap();
@@ -261,14 +264,14 @@ mod tests {
         // run two queries showing we can reuse the passed in executor
         let res = sqlx::query("select 1 + 1")
             .try_map(|row: DB::Row| row.try_get::<i32, _>(0))
-            .fetch_one(Wrapper::<'_, R, M>::from(&mut wrapper))
+            .fetch_one(wrapper.coerce())
             .await
             .unwrap();
 
         // second query
         let res_two = sqlx::query("select 2 + 2")
             .try_map(|row: DB::Row| row.try_get::<i32, _>(0))
-            .fetch_one(Wrapper::<'_, R, M>::from(&mut wrapper))
+            .fetch_one(wrapper.coerce())
             .await
             .unwrap();
 
