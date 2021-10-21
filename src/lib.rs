@@ -17,8 +17,8 @@ struct Never<DB> {
 
 // todo: implement this using a macro
 impl<'c, DB> Executor<'c> for &'_ Never<DB>
-    where
-        DB: Database + Sync,
+where
+    DB: Database + Sync,
 {
     type Database = DB;
 
@@ -26,9 +26,9 @@ impl<'c, DB> Executor<'c> for &'_ Never<DB>
         self,
         _query: E,
     ) -> BoxStream<'e, Result<Either<DB::QueryResult, DB::Row>, Error>>
-        where
-            'c: 'e,
-            E: Execute<'q, Self::Database>,
+    where
+        'c: 'e,
+        E: Execute<'q, Self::Database>,
     {
         match self.inner {}
     }
@@ -37,9 +37,9 @@ impl<'c, DB> Executor<'c> for &'_ Never<DB>
         self,
         _query: E,
     ) -> BoxFuture<'e, Result<Option<DB::Row>, Error>>
-        where
-            'c: 'e,
-            E: Execute<'q, Self::Database>,
+    where
+        'c: 'e,
+        E: Execute<'q, Self::Database>,
     {
         match self.inner {}
     }
@@ -49,8 +49,8 @@ impl<'c, DB> Executor<'c> for &'_ Never<DB>
         _sql: &'q str,
         _parameters: &'e [<Self::Database as Database>::TypeInfo],
     ) -> BoxFuture<'e, Result<<Self::Database as HasStatement<'q>>::Statement, Error>>
-        where
-            'c: 'e,
+    where
+        'c: 'e,
     {
         match self.inner {}
     }
@@ -60,16 +60,16 @@ impl<'c, DB> Executor<'c> for &'_ Never<DB>
         self,
         _sql: &'q str,
     ) -> BoxFuture<'e, Result<Describe<Self::Database>, Error>>
-        where
-            'c: 'e,
+    where
+        'c: 'e,
     {
         match self.inner {}
     }
 }
 
 impl<'c, DB> Executor<'c> for &'_ mut Never<DB>
-    where
-        DB: Database + Sync,
+where
+    DB: Database + Sync,
 {
     type Database = DB;
 
@@ -77,9 +77,9 @@ impl<'c, DB> Executor<'c> for &'_ mut Never<DB>
         self,
         _query: E,
     ) -> BoxStream<'e, Result<Either<DB::QueryResult, DB::Row>, Error>>
-        where
-            'c: 'e,
-            E: Execute<'q, Self::Database>,
+    where
+        'c: 'e,
+        E: Execute<'q, Self::Database>,
     {
         match self.inner {}
     }
@@ -88,9 +88,9 @@ impl<'c, DB> Executor<'c> for &'_ mut Never<DB>
         self,
         _query: E,
     ) -> BoxFuture<'e, Result<Option<DB::Row>, Error>>
-        where
-            'c: 'e,
-            E: Execute<'q, Self::Database>,
+    where
+        'c: 'e,
+        E: Execute<'q, Self::Database>,
     {
         match self.inner {}
     }
@@ -100,8 +100,8 @@ impl<'c, DB> Executor<'c> for &'_ mut Never<DB>
         _sql: &'q str,
         _parameters: &'e [<Self::Database as Database>::TypeInfo],
     ) -> BoxFuture<'e, Result<<Self::Database as HasStatement<'q>>::Statement, Error>>
-        where
-            'c: 'e,
+    where
+        'c: 'e,
     {
         match self.inner {}
     }
@@ -111,8 +111,8 @@ impl<'c, DB> Executor<'c> for &'_ mut Never<DB>
         self,
         _sql: &'q str,
     ) -> BoxFuture<'e, Result<Describe<Self::Database>, Error>>
-        where
-            'c: 'e,
+    where
+        'c: 'e,
     {
         match self.inner {}
     }
@@ -125,12 +125,12 @@ enum Wrapper<'a, R, M> {
 }
 
 impl<'c, DB, R, M> Executor<'c> for Wrapper<'c, R, M>
-    where
-        DB: Database + Sync,
-        R: Debug,
-        M: Debug,
-        &'c R: Executor<'c, Database = DB>,
-        &'c mut M: Executor<'c, Database = DB>,
+where
+    DB: Database + Sync,
+    R: Debug,
+    M: Debug,
+    &'c R: Executor<'c, Database = DB>,
+    &'c mut M: Executor<'c, Database = DB>,
 {
     type Database = DB;
 
@@ -138,9 +138,9 @@ impl<'c, DB, R, M> Executor<'c> for Wrapper<'c, R, M>
         self,
         query: E,
     ) -> BoxStream<'e, Result<Either<DB::QueryResult, DB::Row>, Error>>
-        where
-            'c: 'e,
-            E: Execute<'q, Self::Database>,
+    where
+        'c: 'e,
+        E: Execute<'q, Self::Database>,
     {
         match self {
             Wrapper::Ref { inner } => inner.fetch_many(query),
@@ -152,9 +152,9 @@ impl<'c, DB, R, M> Executor<'c> for Wrapper<'c, R, M>
         self,
         query: E,
     ) -> BoxFuture<'e, Result<Option<DB::Row>, Error>>
-        where
-            'c: 'e,
-            E: Execute<'q, Self::Database>,
+    where
+        'c: 'e,
+        E: Execute<'q, Self::Database>,
     {
         match self {
             Wrapper::Ref { inner } => inner.fetch_optional(query),
@@ -167,8 +167,8 @@ impl<'c, DB, R, M> Executor<'c> for Wrapper<'c, R, M>
         sql: &'q str,
         parameters: &'e [<Self::Database as Database>::TypeInfo],
     ) -> BoxFuture<'e, Result<<Self::Database as HasStatement<'q>>::Statement, Error>>
-        where
-            'c: 'e,
+    where
+        'c: 'e,
     {
         match self {
             Wrapper::Ref { inner } => inner.prepare_with(sql, parameters),
@@ -181,8 +181,8 @@ impl<'c, DB, R, M> Executor<'c> for Wrapper<'c, R, M>
         self,
         sql: &'q str,
     ) -> BoxFuture<'e, Result<Describe<Self::Database>, Error>>
-        where
-            'c: 'e,
+    where
+        'c: 'e,
     {
         match self {
             Wrapper::Ref { inner } => inner.describe(sql),
@@ -192,32 +192,31 @@ impl<'c, DB, R, M> Executor<'c> for Wrapper<'c, R, M>
 }
 
 // from implementation for & using Never as placeholder
-impl<'a, DB, R> From<&'a R> for Wrapper<'a, R, Never<DB>>
-{
+impl<'a, DB, R> From<&'a R> for Wrapper<'a, R, Never<DB>> {
     fn from(inner: &'a R) -> Self {
         Wrapper::Ref { inner }
     }
 }
 
 // from implementation for &mut using Never as placeholder
-impl<'a, DB, M> From<&'a mut M> for Wrapper<'a, Never<DB>, M>
-{
+impl<'a, DB, M> From<&'a mut M> for Wrapper<'a, Never<DB>, M> {
     fn from(inner: &'a mut M) -> Self {
         Wrapper::Mut { inner }
     }
 }
 
-impl <'a, 'b, R, M> Wrapper<'a, R, M> {
+impl<'a, 'b, R, M> Wrapper<'a, R, M> {
     fn coerce(&'b mut self) -> Wrapper<'b, R, M> {
         match self {
             Wrapper::Ref { inner } => Wrapper::Ref { inner },
-            Wrapper::Mut { inner } => Wrapper::Mut { inner }
+            Wrapper::Mut { inner } => Wrapper::Mut { inner },
         }
     }
 }
 
 #[cfg(test)]
 mod tests {
+    use async_trait::async_trait;
     use sqlx::database::HasArguments;
     use sqlx::decode::Decode;
     use sqlx::{ColumnIndex, IntoArguments, PgPool, Row, Type};
@@ -230,7 +229,9 @@ mod tests {
     #[tokio::test]
     async fn test() {
         let pool = PgPool::connect("your connection string").await.unwrap();
-        execute(&pool).await;
+        let mut wrapper = Wrapper::from(&pool);
+        wrapper.test().await;
+        /*execute(&pool).await;
         // we dont pass executor as value so we can reuse it here
         // same for conn and trans
         execute(&pool).await;
@@ -241,40 +242,37 @@ mod tests {
 
         let mut trans = conn.begin().await.unwrap();
         execute(&mut trans).await;
-        execute(&mut trans).await;
+        execute(&mut trans).await;*/
     }
 
-    // method taking in a generic executor using it multiple times
-    async fn execute<'a, DB, R, M, I>(input: I) -> i32
-        where
-            R: Debug + 'a,
-            M: Debug + 'a,
-            for<'b> Wrapper<'b, R, M>: Executor<'b, Database = DB>,
-            I: Into<Wrapper<'a, R, M>>,
-            // next 5 lines are only needed because we also abstract the database
-            // probably doesn't make a lot of sense as SQL Syntax varies
-            DB: Database + Sync,
-            for<'b> <DB as HasArguments<'a>>::Arguments: IntoArguments<'b, DB>,
-            for<'b> i32: Decode<'b, DB>,
-            i32: Type<DB>,
-            usize: ColumnIndex<DB::Row>,
+    #[async_trait(?Send)]
+    trait Repo {
+        async fn test(&mut self);
+    }
+
+    #[async_trait(?Send)]
+    impl<'a, R: 'a, M: 'a, DB: Database> Repo for Wrapper<'a, R, M>
+    where
+        for<'b> Wrapper<'b, R, M>: Executor<'b, Database = DB>,
+        for<'b> <DB as HasArguments<'a>>::Arguments: IntoArguments<'b, DB>,
+        for<'b> i32: Decode<'b, DB>,
+        i32: Type<DB>,
+        usize: ColumnIndex<DB::Row>,
     {
-        let mut wrapper = input.into();
+        async fn test(&mut self) {
+            // run two queries showing we can reuse the passed in executor
+            let res = sqlx::query("select 1 + 1")
+                .try_map(|row: DB::Row| row.try_get::<i32, _>(0))
+                .fetch_one(self.coerce())
+                .await
+                .unwrap();
 
-        // run two queries showing we can reuse the passed in executor
-        let res = sqlx::query("select 1 + 1")
-            .try_map(|row: DB::Row| row.try_get::<i32, _>(0))
-            .fetch_one(wrapper.coerce())
-            .await
-            .unwrap();
-
-        // second query
-        let res_two = sqlx::query("select 2 + 2")
-            .try_map(|row: DB::Row| row.try_get::<i32, _>(0))
-            .fetch_one(wrapper.coerce())
-            .await
-            .unwrap();
-
-        res + res_two
+            // second query
+            let res_two = sqlx::query("select 2 + 2")
+                .try_map(|row: DB::Row| row.try_get::<i32, _>(0))
+                .fetch_one(self.coerce())
+                .await
+                .unwrap();
+        }
     }
 }
